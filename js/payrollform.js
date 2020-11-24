@@ -1,5 +1,15 @@
+//defining global variables in order to update the details
+//isUpdate to check for true or false whether update was done or not
+let isUpdate=false;
+//creating employeepayrollobj (Json) whiich will be used to update the employee details in local storage
+let employeePayrollObj={};
+
 //when content of webpage is loaded, this event gets fired
 window.addEventListener('DOMContentLoaded',(event)=>{
+    //checking for update as soon as the content page of html gets loaded, if check for update is passed
+    //then populating emp payroll form
+    checkForUpdate();
+
     //getting the name and text error and trying to print error message if regex condition is not satisfied
     const name= document.querySelector('#name');
     const textError= document.querySelector('.name-error');
@@ -21,7 +31,10 @@ window.addEventListener('DOMContentLoaded',(event)=>{
             //passing exception message to texterror const.
             textError.textContent=e;
         }
+        
     });
+   
+
     //adding event listener for salary and changing salary output for every salary input made through scrolling
     const salary= document.querySelector('#salary');
     const output= document.querySelector('.salary-output');
@@ -59,6 +72,7 @@ window.addEventListener('DOMContentLoaded',(event)=>{
     }
 
 }
+
 
 });
 //calling save function to save values entered through form into obect and object into local storage
@@ -196,4 +210,52 @@ const setValue=(id,value)=>
 {
     const element= document.querySelector(id);
     element.value=value;
+}
+
+//checking for update
+const checkForUpdate=()=>{
+    //getting values from local storage for editEmp key
+    const employeePayrollJson= localStorage.getItem('editEmp');
+    //if isupdate is true, then json parsing is done to get objects of employee payroll
+    //in the form, objects were added in local storage before stringifying 
+    isUpdate= employeePayrollJson?true:false;
+    if(!isUpdate) return;
+    employeePayrollObj= JSON.parse(employeePayrollJson);
+    //calling set form method to populate form
+    setForm();
+}
+//setting the values in the form function
+const setForm = () => {
+    //calling set value function to set text fields and date
+    setValue('#name', employeePayrollObj._name);
+    //calling set selected values function to check the fields
+    setSelectedValues('[name=profile]', employeePayrollObj._profilePic);
+    setSelectedValues('[name=gender]', employeePayrollObj._gender);
+    setSelectedValues('[name=department]', employeePayrollObj._department);
+    setValue('#salary',employeePayrollObj._salary);
+    //calling set text value function to set text content of output salary
+    setTextValue('.salary-output', employeePayrollObj._salary);
+    setValue('#notes',employeePayrollObj._note);
+    let date = stringifyDate(employeePayrollObj._startDate).split(" ");
+    setValue('#day', date[0]);
+    setValue('#month',date[1]);
+    setValue('#year',date[2]);
+}
+//set selected values function to set checked values for gender, department and profile pic
+const setSelectedValues = (propertyValue, value) => {
+    //getting all the items for name passed in query selector
+    let allItems = document.querySelectorAll(propertyValue);
+    //for each item of all items, condition is checked if item is array or not
+    allItems.forEach(item => {
+        //if value that recieved as input is array, then value array is checked for item value received from all items
+        //if value matches, particular item is checked
+        if(Array.isArray(value)) {
+            if (value.includes(item.value)) {
+                item.checked = true;
+            }
+        }
+        //if value is not array, then foreach item (properties) from allitems,item is compared to value and then checked if true. 
+        else if (item.value === value)
+            item.checked = true;
+    });    
 }
