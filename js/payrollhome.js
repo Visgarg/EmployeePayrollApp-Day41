@@ -97,3 +97,23 @@ const createEmployeePayrollJSON = () => {
       }
       return deptHtml;
   }
+
+  //Adding function to delete elements when click on delete icon in actions
+  const remove= (node)=>{
+      //empPayrollList is array of data which is instatiated once all the content of webpage gets loaded
+      let empPayrollData= empPayrollList.find(empData=>empData._id=node.id);
+      //after finding out, if element exist or node with given id, index of particular id is find out
+      if(!empPayrollData) return;
+      //for finding out index, emppayroll list is converted to array only of id by mapping and then
+      //emppayrolldata id is compared to get index
+      const index= empPayrollList.map(empData=>empData._id).indexOf(empPayrollData.id);
+      //using splice to remove element from array
+      empPayrollList.splice(index,1);
+      //updating the data into local storage
+      localStorage.setItem("EmployeePayrollList",JSON.stringify(empPayrollList));
+      //updating the count of employees here, otherwise refresh will be required to update count
+      //refresh slows the code, hence update of count is done here only.
+      document.querySelector(".emp-count").textContent= empPayrollList.length;
+      //showing updated data of local storage
+      createInnerHtml();
+  }
