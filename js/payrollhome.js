@@ -34,6 +34,7 @@ const createInnerHtml=()=>
     for(const empPayrollData of empPayrollList){
         //adding data of empPayrollData into innerHtml using literals and placeholders, as loop iterates,  more data is added in inner html
         //using template literals to get particular values from objects obtained from local storage.
+        //calling stringifyDate function from utility class to convert date into specific format.
         innerHtml= `${innerHtml}
         <tr>
             <td><img class="profile" alt="" src="${empPayrollData._profilePic}"></td>
@@ -42,7 +43,7 @@ const createInnerHtml=()=>
             <td>${getDeptHtml(empPayrollData._department)}
             </td>
             <td>${empPayrollData._salary}</td>
-            <td>${empPayrollData._startDate}</td>
+            <td>${stringifyDate(empPayrollData._startDate)}</td>
             <td><img id="${empPayrollData._id}" onclick= "remove(this)" alt="delete" src="../assets/icons/delete-black-18dp.svg">
             <img id="${empPayrollData._id}" onclick= "update(this)" alt="edit" src="../assets/icons/create-black-18dp.svg"></td>
         </tr>`;
